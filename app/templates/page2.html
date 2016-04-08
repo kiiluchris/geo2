@@ -1,0 +1,6 @@
+<p>{{ place.user }}</p>
+<p>{{ place.city }}</p>
+<p>{{ place.location }}</p>
+{% for x in near %}
+<p>Nearby: {{ x.location }}</p>
+{% endfor %}
