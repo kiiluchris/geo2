@@ -4,10 +4,14 @@ from django.shortcuts import render, get_object_or_404
 from .forms import PlaceForm
 import os, re, math
 
+from django.utils import timezone
+from django.template import Context, Template
+
 # Calendar imports
 
-import calendar
+from calendar import HTMLCalendar
 from datetime import date
+from django.utils.safestring import mark_safe
 from itertools import groupby
 
 from django.utils.html import conditional_escape as esc
@@ -22,14 +26,10 @@ def home(request):
 		form.save_m2m()
 
 	places = SimplePlace.objects.all()
-	# my_workouts = Workouts.objects.order_by('my_date').filter(
- #    	my_date__year=year, my_date__month=month
- #  	)
-	# cal = WorkoutCalendar(my_workouts).formatmonth(year, month)
 	context = {
 		'queryset': places,
 		'form':form,
-		# 'calendar': mark_safe(cal),
+		'calendar': calendar(2016, 'March')
 	}
 	return render(request, "home.html", context)
 
@@ -38,20 +38,19 @@ def page(request, id = None):
 	current_lat =  current_place.location.split(",")[0]
 	current_lng =  current_place.location.split(",")[1]
 
-	# print "Current_Lng: ", float(current_lng), "Current_Lat: ", float(current_lat)
-
-	# # query = "SELECT *, ( 3959 * acos( cos( radians(" . $lat . ") ) * cos( radians( lat ) ) * cos( radians( lng ) - radians(" . $lng . ") ) + sin( radians(" . $lat . ") ) * sin( radians( lat ) ) ) ) AS distance FROM your_table HAVING distance < 5";
-	# # near = SimplePlace.objects.raw(query):
 	other_places = SimplePlace.objects.values('location', 'city')
 	nearby_places = []
+
 	for place in other_places:
 		lat = place['location'].split(",")[0]
 		lng = place['location'].split(",")[1]
+		# Calculate places within a certain distance
 		distance = calc_dist(float(current_lat), float(current_lng), float(lat), float(lng))
 
 		if distance < 50.0 and current_place.city != place['city']:
 			nearby_places.append(place)
 
+	# Remove duplicates
 	nearby_places = [dict(tupleized) for tupleized in set(tuple(item.items()) for item in nearby_places)]
 
 	context = {
@@ -90,7 +89,18 @@ def calc_dist(lat1, lon1, lat2, lon2):
 	# return km2mile(earth_radius * c)
 
 
-# Django calendar
+# # Django calendar
+
+# def calendar(year, month):
+#   my_workouts = #Workouts.objects.order_by('my_date').filter(
+#     my_date__year=year, my_date__month=month
+#   )
+#   cal = WorkoutCalendar(my_workouts).formatmonth(year, month)
+#   cal_template = Template(mark_safe(cal))
+#   context = {
+#   	'calendar': cal_template,
+#   	}
+#   return context
 
 # class WorkoutCalendar(HTMLCalendar):
 
