@@ -1,7 +1,10 @@
 {% load staticfiles %}
+<head>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+  <link rel="stylesheet" href="/resources/demos/style.css">
+</head>
 
-
-
+<body>
 <div class="column small-8 small-centered">
 	<h1>Form</h1>
 
@@ -14,6 +17,11 @@
 </div>
 
 
+<p>Date: <input type="text" id="datepicker"></p>
+
+
+{{calendar}}
+
 {% if queryset %}
 {% for place in queryset %}
 <p><a href="{{ place.get_absolute_url }}">{{ place.user }}</a></p>
@@ -25,6 +33,9 @@
 
 <!-- Jquery js -->
 <script src="http://code.jquery.com/jquery-2.2.0.min.js"></script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 <script type="text/javascript" src="{% static 'js/form.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/datepicker.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/jquery.livequery.js' %}"></script>
 <script type="text/javascript" src="//maps.google.com/maps/api/js?key=AIzaSyD0MSmH6-nAgxIeJhO_SBiNjrbKyPHhQ9k"></script>
+</body>
