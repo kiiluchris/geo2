@@ -15,13 +15,13 @@
                 location_map.panTo(point);
             }
             else {
-                var point = new google.maps.LatLng(1, 1);
+                var point = new google.maps.LatLng(-33.867487, 151.206990);
                 location_map.panTo(point)
             }
         }
 
         function load() {
-            var point = new google.maps.LatLng(1, 1);
+            var point = new google.maps.LatLng(-33.867487, 151.206990);
 
             var options = {
                 mapTypeId: google.maps.MapTypeId.ROADMAP
@@ -57,12 +57,10 @@
 
                 // Finding location names by clicking the map
                 var coordinates = location_coordinate.val().split(",");
-                console.log(coordinates);
                 var lat = coordinates[0];
                 var lng = coordinates[1];
                 var latlng = {lat: parseFloat(lat), lng: parseFloat(lng)};
-                console.log(lat, lng);
-                console.log(geocode_reverse(latlng));
+                geocode_reverse(latlng);
             });
 
             var no_change = false;
@@ -141,9 +139,7 @@
                 if (geocoder) {
                     geocoder.geocode({"latLng": location}, function(results, status) {
                         if (status == google.maps.GeocoderStatus.OK) {
-                            console.log(results[0].formatted_address);
-                            address.val(results[0].formatted_address)
-                            return results[0].formatted_address;
+                            address.val(results[0].formatted_address);
                         }
                     });
                 }
