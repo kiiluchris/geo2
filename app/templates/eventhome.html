@@ -8,7 +8,7 @@
     <p>Select the link below to see upcoming events:</p>
     <ul id="belts">
     {% for event in event_type %}
-        <li><a href="{% url 'app:events' event.abbr %}" >{{ event.label }}</a></li>
+        <li><a href="{% url 'events' event.abbr %}" >{{ event.label }}</a></li>
     {% endfor %}
     </ul>
 </div>

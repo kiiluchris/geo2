@@ -29,7 +29,7 @@ class SimplePlace(pmodels.Model):
     	return self.city
 
     def get_absolute_url(self):
-		return reverse("app:page", kwargs={"id": self.id})
+		return reverse("page", kwargs={"id": self.id})
 
 class Skill(pmodels.Model):
     skill = pmodels.ManyToManyField(SimplePlace)

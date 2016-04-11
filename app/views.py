@@ -24,16 +24,15 @@ def event_home(request):
 	})
 def event_type(request, abbr):
 	event_type = get_object_or_404(swingtime.EventType, abbr=abbr)
-	# now = datetime.now()
-	# occurrences = swingtime.Occurrence.objects.filter(
-	#     event__event_type=event_type,
-	#     start_time__gte=now,
-	#     start_time__lte=now+timedelta(days=+30)
-	# )
-	# print occurrences
+	now = datetime.now()
+	occurrences = swingtime.Occurrence.objects.filter(
+	    event__event_type=event_type,
+	    start_time__gte=now,
+	    start_time__lte=now+timedelta(days=+30)
+	)
 	return render(request, 'upcoming_by_event_type.html', {
-	    # 'occurrences': occurrences,
-	    'event_type': event_type
+	    'occurrences': occurrences,
+	    'event_type': event_type,
     })
 
 
