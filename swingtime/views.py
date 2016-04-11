@@ -2,6 +2,7 @@ import calendar
 import itertools
 import logging
 from datetime import datetime, timedelta, time
+from django.utils import timezone
 
 from django import http
 from django.db import models
@@ -86,7 +87,7 @@ def event_view(
     data = {
         'event': event,
         'event_form': event_form or event_form_class(instance=event),
-        'recurrence_form': recurrence_form or recurrence_form_class(initial={'dtstart': datetime.now()})
+        'recurrence_form': recurrence_form or recurrence_form_class(initial={'dtstart': timezone.now()})
     }
     return render(request, template, data)
 
@@ -162,7 +163,7 @@ def add_event(
                 # TODO: A badly formatted date is passed to add_event
                 logging.warning(exc)
         
-        dtstart = dtstart or datetime.now()
+        dtstart = dtstart or timezone.now()
         event_form = event_form_class()
         recurrence_form = recurrence_form_class(initial={'dtstart': dtstart})
             
@@ -218,7 +219,7 @@ def day_view(request, year, month, day, template='swingtime/daily_view.html', **
     See documentation for function``_datetime_view``.
     
     '''
-    dt = datetime(int(year), int(month), int(day))
+    dt = timezone.make_aware(datetime(int(year), int(month), int(day)), timezone.get_default_timezone())
     return _datetime_view(request, template, dt, **params)
 
 

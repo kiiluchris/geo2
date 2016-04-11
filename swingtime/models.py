@@ -7,6 +7,9 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.conf import settings
 
+# Make all datetimefields timezone aware
+from django.utils import timezone
+
 from django.core.urlresolvers import reverse
 
 try:
@@ -127,7 +130,7 @@ class Event(models.Model):
         Return all occurrences that are set to start on or after the current
         time.
         '''
-        return self.occurrence_set.filter(start_time__gte=datetime.now())
+        return self.occurrence_set.filter(start_time__gte=timezone.now())
 
     #---------------------------------------------------------------------------
     def next_occurrence(self):
@@ -162,8 +165,8 @@ class OccurrenceManager(models.Manager):
         
         * ``event`` can be an ``Event`` instance for further filtering.
         '''
-        dt = dt or datetime.now()
-        start = datetime(dt.year, dt.month, dt.day)
+        dt = dt or timezone.now()
+        start = timezone.make_aware(datetime(dt.year, dt.month, dt.day), timezone.get_default_timezone())
         end = start.replace(hour=23, minute=59, second=59)
         qs = self.filter(
             models.Q(
@@ -277,7 +280,7 @@ def create_event(
     if note is not None:
         event.notes.create(note=note)
 
-    start_time = start_time or datetime.now().replace(
+    start_time = start_time or timezone.now().replace(
         minute=0,
         second=0, 
         microsecond=0
