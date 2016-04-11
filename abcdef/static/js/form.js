@@ -5,7 +5,8 @@
 
         var location_map;
 
-        var location_coordinate = parent.find('input[type=text]');
+        var location_coordinate = parent.find('#id_location');
+        var address = parent.find('#id_city');
 
         function savePosition(point)
         {
@@ -53,6 +54,15 @@
             google.maps.event.addListener(location_map, 'click', function(mouseEvent){
                 marker.setPosition(mouseEvent.latLng);
                 savePosition(mouseEvent.latLng);
+
+                // Finding location names by clicking the map
+                var coordinates = location_coordinate.val().split(",");
+                console.log(coordinates);
+                var lat = coordinates[0];
+                var lng = coordinates[1];
+                var latlng = {lat: parseFloat(lat), lng: parseFloat(lng)};
+                console.log(lat, lng);
+                console.log(geocode_reverse(latlng));
             });
 
             var no_change = false;
@@ -125,13 +135,15 @@
                 }
             }
 
-            function geocode_reverse(location, cb) {
-                var geocoder = new google.maps.Geocoder();
+            // function geocode_reverse(location, cb) {
+            function geocode_reverse(location) {
+                var geocoder = new google.maps.Geocoder();      
                 if (geocoder) {
                     geocoder.geocode({"latLng": location}, function(results, status) {
                         if (status == google.maps.GeocoderStatus.OK) {
-                            cb(results[0].geometry.location);
-                            placeMarker(results[0].geometry.location);
+                            console.log(results[0].formatted_address);
+                            address.val(results[0].formatted_address)
+                            return results[0].formatted_address;
                         }
                     });
                 }
