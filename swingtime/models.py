@@ -7,6 +7,8 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.conf import settings
 
+from django.core.urlresolvers import reverse
+
 try:
     from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 except ImportError:

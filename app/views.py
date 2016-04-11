@@ -15,18 +15,25 @@ from django.shortcuts import get_object_or_404, render
 from swingtime import models as swingtime
 
 #-------------------------------------------------------------------------------
+def event_home(request):
+	events = swingtime.EventType.objects.all()	
+	for e in events.values():
+		print e['abbr']
+	return render(request, 'eventhome.html', {
+	    'event_type': events,
+	})
 def event_type(request, abbr):
-    event_type = get_object_or_404(swingtime.EventType, abbr=abbr)
-    now = datetime.now()
-    occurrences = swingtime.Occurrence.objects.filter(
-        event__event_type=event_type,
-        start_time__gte=now,
-        start_time__lte=now+timedelta(days=+30)
-    )
-    print occurrences
-    return render(request, 'upcoming_by_event_type.html', {
-        'occurrences': occurrences,
-        'event_type': event_type
+	event_type = get_object_or_404(swingtime.EventType, abbr=abbr)
+	# now = datetime.now()
+	# occurrences = swingtime.Occurrence.objects.filter(
+	#     event__event_type=event_type,
+	#     start_time__gte=now,
+	#     start_time__lte=now+timedelta(days=+30)
+	# )
+	# print occurrences
+	return render(request, 'upcoming_by_event_type.html', {
+	    # 'occurrences': occurrences,
+	    'event_type': event_type
     })
 
 

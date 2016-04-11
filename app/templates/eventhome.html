@@ -4,10 +4,12 @@
     <h3>Welcome to a giving community!</h3>
     <p>Check out our opportunities to help</p>
 
-    <h3>Our Belt Classes</h3>
-    <p>Select your belt below to see upcoming events:</p>
+    <h3>Opportunities</h3>
+    <p>Select the link below to see upcoming events:</p>
     <ul id="belts">
-        <li><a id="white-belt"  href="{% url 'app:events' "bgn" %}">White belt</a></li>
+    {% for event in event_type %}
+        <li><a href="{% url 'app:events' event.abbr %}" >{{ event.label }}</a></li>
+    {% endfor %}
     </ul>
 </div>
 {% endblock main_content %}
