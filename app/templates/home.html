@@ -7,7 +7,9 @@
 
 	<form method="POST" action="" enctype="multipart/form-data" autocomplete='off'>
 		{% csrf_token %}
-		{{ form.as_p }}
+		{{ form.city }}
+		{{ form.location }}
+		{{ form.skills }}
 
 		<input type="submit" class="button" value="Create post">
 	</form>
@@ -19,7 +21,7 @@
 <p><a href="{{ place.get_absolute_url }}">{{ place.user }}</a></p>
 <p>{{ place.city }}</p>
 <p>{{ place.location }}</p>
-<p>Skills: {{ place.skills.all.values }}</p>
+<p>Skills: {% for skill in place.skills.all.values %}<br>{{ skill.skill }}{% endfor %}</p>
 {% endfor %}
 {% endif %}
 

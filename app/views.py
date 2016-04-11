@@ -6,7 +6,7 @@ import math
 
 # Create your views here.
 def home(request):
-	form = PlaceForm(request.POST or None)
+	form = PlaceForm(data = request.POST)
 	if form.is_valid():
 		instance = form.save(commit=False)
 		instance.user = request.user
