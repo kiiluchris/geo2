@@ -1,6 +1,9 @@
-<p>{{ place.user }}</p>
-<p>{{ place.city }}</p>
-<p>{{ place.location }}</p>
-{% for x in near %}
-<p>Nearby: {{ x.location }}</p>
+<p>{{ current_place.user }}</p>
+<p>{{ current_place.city }}</p>
+<p>{{ current_place.location }}</p>
+<p>Nearby places(50 km radius):</p>
+{% for near in other_places %}
+<ul>
+ <li>{{ near.city }}</li>
+ </ul>
 {% endfor %}

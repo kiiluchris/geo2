@@ -2,7 +2,7 @@ from django.shortcuts import render
 from .models import SimplePlace
 from django.shortcuts import render, get_object_or_404
 from .forms import PlaceForm
-import math
+import os, re, math
 
 # Calendar imports
 
@@ -34,22 +34,60 @@ def home(request):
 	return render(request, "home.html", context)
 
 def page(request, id = None):
-	place = get_object_or_404(SimplePlace, id = id)
-	# current_lat =  place.location.split(",")[0]
-	# current_lng =  place.location.split(",")[1]
+	current_place = get_object_or_404(SimplePlace, id = id)
+	current_lat =  current_place.location.split(",")[0]
+	current_lng =  current_place.location.split(",")[1]
+
 	# print "Current_Lng: ", float(current_lng), "Current_Lat: ", float(current_lat)
 
 	# # query = "SELECT *, ( 3959 * acos( cos( radians(" . $lat . ") ) * cos( radians( lat ) ) * cos( radians( lng ) - radians(" . $lng . ") ) + sin( radians(" . $lat . ") ) * sin( radians( lat ) ) ) ) AS distance FROM your_table HAVING distance < 5";
 	# # near = SimplePlace.objects.raw(query):
-	# near = SimplePlace.objects.values('location')
+	other_places = SimplePlace.objects.values('location', 'city')
+	nearby_places = []
+	for place in other_places:
+		lat = place['location'].split(",")[0]
+		lng = place['location'].split(",")[1]
+		distance = calc_dist(float(current_lat), float(current_lng), float(lat), float(lng))
+
+		if distance < 50.0 and current_place.city != place['city']:
+			nearby_places.append(place)
+
+	nearby_places = [dict(tupleized) for tupleized in set(tuple(item.items()) for item in nearby_places)]
 
 	context = {
-		"place":place,
-		# 'near':near,
+		"current_place":current_place,
+		'other_places':nearby_places,
 	}
 	return render(request, "page2.html", context)
 
+# def km2mile(x):
+# 	'''a function to convert km to mile'''
+# 	return int(x * 0.621371)
 
+def calc_dist(lat1, lon1, lat2, lon2):
+	'''a function to calculate the distance in miles between two 
+	points on the earth, given their latitudes and longitudes in degrees'''
+
+
+	# covert degrees to radians
+	lat1 = math.radians(lat1)
+	lon1 = math.radians(lon1)
+	lat2 = math.radians(lat2)
+	lon2 = math.radians(lon2) 
+
+	# get the differences
+	delta_lat = lat2 - lat1 
+	delta_lon = lon2 - lon1 
+
+	# Haversine formula, 
+	# from http://www.movable-type.co.uk/scripts/latlong.html
+	a = ((math.sin(delta_lat/2))**2) + math.cos(lat1)*math.cos(lat2)*((math.sin(delta_lon/2))**2) 
+	c = 2 * math.atan2(a**0.5, (1-a)**0.5)
+	# earth's radius in km
+	earth_radius = 6371
+	# return distance in miles
+	return earth_radius * c
+	# return km2mile(earth_radius * c)
 
 
 # Django calendar
