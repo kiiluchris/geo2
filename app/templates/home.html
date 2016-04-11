@@ -5,6 +5,7 @@
 </head>
 
 <body>
+<a style="float: right;" href="{% url 'app:eventhome' %}">Events</a>
 <div class="column small-8 small-centered">
 	<h1>Form</h1>
 
@@ -20,7 +21,6 @@
 <p>Date: <input type="text" id="datepicker"></p>
 
 
-{{calendar}}
 
 {% if queryset %}
 {% for place in queryset %}

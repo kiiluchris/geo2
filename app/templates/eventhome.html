@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block main_content %}
+<div class="center">
+    <h3>Welcome to a giving community!</h3>
+    <p>Check out our opportunities to help</p>
+
+    <h3>Our Belt Classes</h3>
+    <p>Select your belt below to see upcoming events:</p>
+    <ul id="belts">
+        <li><a id="white-belt"  href="{% url 'app:events' "bgn" %}">White belt</a></li>
+    </ul>
+</div>
+{% endblock main_content %}

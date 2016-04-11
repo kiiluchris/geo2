@@ -1,22 +1,35 @@
+# Rendering views
 from django.shortcuts import render
 from .models import SimplePlace
 from django.shortcuts import render, get_object_or_404
 from .forms import PlaceForm
-import os, re, math
 
-from django.utils import timezone
-from django.template import Context, Template
+# Math class
+import math
 
-# Calendar imports
+# Swingtime imports
+from datetime import datetime, timedelta
+from django.template.context import RequestContext
+from django.shortcuts import get_object_or_404, render
 
-from calendar import HTMLCalendar
-from datetime import date
-from django.utils.safestring import mark_safe
-from itertools import groupby
+from swingtime import models as swingtime
 
-from django.utils.html import conditional_escape as esc
+#-------------------------------------------------------------------------------
+def event_type(request, abbr):
+    event_type = get_object_or_404(swingtime.EventType, abbr=abbr)
+    now = datetime.now()
+    occurrences = swingtime.Occurrence.objects.filter(
+        event__event_type=event_type,
+        start_time__gte=now,
+        start_time__lte=now+timedelta(days=+30)
+    )
+    print occurrences
+    return render(request, 'upcoming_by_event_type.html', {
+        'occurrences': occurrences,
+        'event_type': event_type
+    })
 
-# Create your views here.
+
 def home(request):
 	form = PlaceForm(data = request.POST)
 	if form.is_valid():
@@ -29,7 +42,7 @@ def home(request):
 	context = {
 		'queryset': places,
 		'form':form,
-		'calendar': calendar(2016, 'March')
+		# 'calendar': calendar(2016, 'March'),
 	}
 	return render(request, "home.html", context)
 
@@ -87,54 +100,3 @@ def calc_dist(lat1, lon1, lat2, lon2):
 	# return distance in miles
 	return earth_radius * c
 	# return km2mile(earth_radius * c)
-
-
-# # Django calendar
-
-# def calendar(year, month):
-#   my_workouts = #Workouts.objects.order_by('my_date').filter(
-#     my_date__year=year, my_date__month=month
-#   )
-#   cal = WorkoutCalendar(my_workouts).formatmonth(year, month)
-#   cal_template = Template(mark_safe(cal))
-#   context = {
-#   	'calendar': cal_template,
-#   	}
-#   return context
-
-# class WorkoutCalendar(HTMLCalendar):
-
-#     def __init__(self, workouts):
-#         super(WorkoutCalendar, self).__init__()
-#         self.workouts = self.group_by_day(workouts)
-
-#     def formatday(self, day, weekday):
-#         if day != 0:
-#             cssclass = self.cssclasses[weekday]
-#             if date.today() == date(self.year, self.month, day):
-#                 cssclass += ' today'
-#             if day in self.workouts:
-#                 cssclass += ' filled'
-#                 body = ['<ul>']
-#                 for workout in self.workouts[day]:
-#                     body.append('<li>')
-#                     body.append('<a href="%s">' % workout.get_absolute_url())
-#                     body.append(esc(workout.title))
-#                     body.append('</a></li>')
-#                 body.append('</ul>')
-#                 return self.day_cell(cssclass, '%d %s' % (day, ''.join(body)))
-#             return self.day_cell(cssclass, day)
-#         return self.day_cell('noday', '&nbsp;')
-
-#     def formatmonth(self, year, month):
-#         self.year, self.month = year, month
-#         return super(WorkoutCalendar, self).formatmonth(year, month)
-
-#     def group_by_day(self, workouts):
-#         field = lambda workout: workout.performed_at.day
-#         return dict(
-#             [(day, list(items)) for day, items in groupby(workouts, field)]
-#         )
-
-#     def day_cell(self, cssclass, body):
-#         return '<td class="%s">%s</td>' % (cssclass, body)
