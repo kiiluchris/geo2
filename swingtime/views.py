@@ -229,7 +229,7 @@ def today_view(request, template='swingtime/daily_view.html', **params):
     See documentation for function``_datetime_view``.
     
     '''
-    return _datetime_view(request, template, datetime.now(), **params)
+    return _datetime_view(request, template, timezone.now(), **params)
 
 
 #-------------------------------------------------------------------------------
@@ -262,11 +262,11 @@ def year_view(request, year, template='swingtime/yearly_view.html', queryset=Non
     )
 
     def group_key(o):
-        return datetime(
+        return timezone.make_aware(datetime(
             year,
             o.start_time.month if o.start_time.year == year else o.end_time.month,
             1
-        )
+        ), timezone.get_default_timezone())
 
     return render(request, template, {
         'year': year,
@@ -310,9 +310,9 @@ def month_view(
     '''
     year, month = int(year), int(month)
     cal         = calendar.monthcalendar(year, month)
-    dtstart     = datetime(year, month, 1)
+    dtstart     = timezone.make_aware(datetime(year, month, 1), timezone.get_default_timezone())
     last_day    = max(cal[-1])
-    dtend       = datetime(year, month, last_day)
+    dtend       = timezone.make_aware(datetime(year, month, last_day), timezone.get_default_timezone())
 
     # TODO Whether to include those occurrences that started in the previous
     # month but end in this month?
@@ -324,7 +324,7 @@ def month_view(
     
     by_day = dict([(dt, list(o)) for dt,o in itertools.groupby(occurrences, start_day)])
     data = {
-        'today':      datetime.now(),
+        'today':      timezone.now(),
         'calendar':   [[(d, by_day.get(d, [])) for d in row] for row in cal],
         'this_month': dtstart,
         'next_month': dtstart + timedelta(days=+last_day),
@@ -332,4 +332,15 @@ def month_view(
     }
 
     return render(request, template, data)
+
+# Configure base.html
+def time(request):
+    now = timezone.now()
+    context = {
+        'day': now.day,
+        'month': now.month,
+        'year': now.year,
+    }
+    print now.month
+    return render(request, "base.html", context)
 

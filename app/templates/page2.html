@@ -1,3 +1,5 @@
+{% extends "base.html" %}
+{% block main_content %}
 <p>{{ current_place.user }}</p>
 <p>{{ current_place.city }}</p>
 <p>{{ current_place.location }}</p>
@@ -7,3 +9,4 @@
  <li>{{ near.city }}</li>
  </ul>
 {% endfor %}
+{% endblock %}

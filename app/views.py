@@ -1,8 +1,10 @@
 # Rendering views
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import SimplePlace
 from django.shortcuts import render, get_object_or_404
 from .forms import PlaceForm
+
+from django.utils import timezone
 
 # Math class
 import math
@@ -16,24 +18,30 @@ from swingtime import models as swingtime
 
 #-------------------------------------------------------------------------------
 def event_home(request):
+	"""
+		Function to load the event home page
+	"""
 	events = swingtime.EventType.objects.all()	
-	for e in events.values():
-		print e['abbr']
-	return render(request, 'eventhome.html', {
+	return render(request, 'swingtime/eventhome.html', {
 	    'event_type': events,
 	})
 def event_type(request, abbr):
+	"""
+		Function to load the events within 30 days from 
+		the current date for specific categories.
+	"""
 	event_type = get_object_or_404(swingtime.EventType, abbr=abbr)
-	now = datetime.now()
+	now = timezone.now()
 	occurrences = swingtime.Occurrence.objects.filter(
 	    event__event_type=event_type,
 	    start_time__gte=now,
 	    start_time__lte=now+timedelta(days=+30)
 	)
-	return render(request, 'upcoming_by_event_type.html', {
-	    'occurrences': occurrences,
+	context = {
+		'occurrences': occurrences,
 	    'event_type': event_type,
-    })
+	}
+	return render(request, 'swingtime/upcoming_by_event_type.html', context)
 
 
 def home(request):

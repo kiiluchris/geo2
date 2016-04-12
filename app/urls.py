@@ -11,7 +11,7 @@ urlpatterns = [
     
     url(r'^$', views.home, name="home"),
     url(r'^page(?P<id>[0-9]+)/$', views.page, name="page"),
-    url(r'^calendar/', views.event_home, name='eventhome'),
-    url(r'^calendars/events/type/([^/]+)/$', views.event_type, name='events'),
-    url(r'^calendars/', include('swingtime.urls')),
+    url(r'^event/type/([^/]+)/$', views.event_type, name='events'),
+    url(r'^event/type/', views.event_home, name='eventhome'),
+    url(r'^events/', include('swingtime.urls')),
 ]

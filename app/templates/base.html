@@ -125,11 +125,20 @@
 <body>
 <div class="container">
     <header role="banner">
+        <h1><a href="{% url 'home' %}">Home</a></h1>
     </header>
     <main role="main">
         {% block navigation %}
         <h2>Time for Good</h2>
         <nav>
+        {% now "Y" as current_year %}
+        {% now "m" as current_month %}
+            <a href="{% url 'eventhome' %}">Home</a> &middot;
+            <a href="{% url 'swingtime-today' %}">Daily View</a> &middot; 
+            <a href="{% url 'swingtime-monthly-view' current_year current_month %}">
+                Monthly View</a> &middot; 
+            <a href="{% url 'swingtime-yearly-view' current_year %}">Yearly View</a> &middot; 
+            <a href="{% url 'swingtime-events' %}">Event Listing</a>
         </nav>
         {% endblock navigation %}
         {% block main_content %}{% endblock main_content %}

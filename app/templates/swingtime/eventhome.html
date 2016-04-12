@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block main_content %}
+<div class="center">
+    <h3>Welcome to a giving community!</h3>
+    <p>Check out our opportunities to help</p>
+
+    <h3>Opportunities</h3>
+    <p>Select the link below to see upcoming events:</p>
+    <ul id="belts">
+    {% for event in event_type %}
+        <li><a href="{% url 'events' event.abbr %}" >{{ event.label }}</a></li>
+    {% endfor %}
+    </ul>
+</div>
+{% endblock main_content %}
