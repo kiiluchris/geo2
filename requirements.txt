@@ -1,6 +1,6 @@
 Authomatic==0.1.0.post1
 Babel==2.3.2
-Django==1.8.12
+Django==2.2.24
 Jinja2==2.8
 MarkupSafe==0.23
 Pillow==3.1.1
